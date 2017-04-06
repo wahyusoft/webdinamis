@@ -1,20 +1,19 @@
  <!-- Content Header (Page header) -->
  <?php
  	if(isset($_GET['act'])=="edit"){
- 		$stmt = $conn->prepare("SELECT * FROM categories WHERE categoryID=".$_GET["ID"]);
+ 		$stmt = $conn->prepare("SELECT * FROM books WHERE bookId=".$_GET["ID"]);
 		$stmt->execute();
 		$rows = $stmt->fetchAll(PDO::FETCH_OBJ);	
- 		$CategoryName = $rows[0]->CategoryName;
- 		$Description  = $rows[0]->Description; 		
+ 		$title = $rows[0]->title; 		
+ 		$authorID = $rows[0]->authorID;
  	}else{
- 		$CategoryName = "";
- 		$Description  = "";
-
+ 		$title = ""; 		
+ 		$authorID = "";		
  	}
  ?>
     <section class="content-header">
       <h1>
-        Categories
+        Author
       </h1>      
     </section>
 
@@ -32,15 +31,25 @@
             <!-- form start -->
             <form method="post" action="#">
               <div class="box-body">
-                <div class="form-group">
-                  <label for="CategoryName">Category Name</label>
-                  <input type="text" class="form-control" name="CategoryName" placeholder="Enter Category Name" required="required" value="<?php echo $CategoryName;?>">
+                 <div class="form-group">
+                  <label for="title">Title</label>
+                  <input type="text" class="form-control" name="title" placeholder="Enter book title" required="required" value="<?php echo $title;?>">
                 </div>
                 <div class="form-group">
-                  <label for="Description">Description</label>
-                  <input type="text" class="form-control" name="Description" placeholder="Enter Description" value="<?php echo $Description;?>">
+                  <label for="AuthorName">Author Name</label>
+                  <select name="authorID" class="form-control">
+                  <?php 
+                  	$auth = $conn->prepare("SELECT * FROM authors");
+					$auth->execute();
+					while($row = $auth->fetch(PDO::FETCH_OBJ)){
+						$selected = ($row->authorID==$authorID)? "selected" : "";
+						echo "<option value='$row->authorID' $selected >$row->authorName</option>";
+					}	
+
+                  ?>
+                  </select>
                 </div>
-                
+              
               </div>
               <!-- /.box-body -->
 
@@ -56,26 +65,28 @@
       <!-- Main row -->
 	<?php
 	  if(isset($_POST["btnSimpan"])):
-		$a = $_POST["CategoryName"];
-		$b = $_POST["Description"];
+		$a = $_POST["title"];
+		$b = $_POST["authorID"];		
 		// validation
 		if(empty($a)){
-			echo "Category cannot empty";
+			echo "The book title cannot empty";
 			exit();
 		}
+
 		if(empty($b)){
-			echo "Description cannot empty";
+			echo "Author Name cannot empty";
 			exit();
 		}
+		
 		try {
 			if(isset($_GET['act'])=="edit")
-				$sql = "UPDATE categories SET CategoryName='$a', Description='$b' WHERE CategoryID=".$_GET["ID"];
+				$sql = "UPDATE books SET title='$a' , authorID='$b' WHERE bookId=".$_GET["ID"];
 			else
-				$sql = "INSERT INTO categories (CategoryName, Description)VALUES ('$a','$b')";
+				$sql = "INSERT INTO books (title,authorID)VALUES ('$a','$b')";
 				
 			if ($conn->query($sql)) {
 				echo "<script type= 'text/javascript'>alert('Save data Successfully');
-				      window.location.replace('index.php?pages=category');
+				      window.location.replace('index.php?pages=books');
 					 </script>";
 			}else{
 				echo "<script type= 'text/javascript'>alert('Data not successfully save data.');</script>";

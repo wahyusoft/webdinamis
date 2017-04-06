@@ -21,28 +21,24 @@
      $config = array("host"=>"localhost",
                      "username"=>"root",
                      "password"=>"",
-                     "db"=>"northwind");
+                     "db"=>"librarydb");
      $conn = connectDB($config);
      $pages=(isset($_GET["pages"] ))? $_GET["pages"] : '';
       switch($pages){
-		case "category" :
-          include_once(path."category/view.php");
+		case "authors" :
+          include_once(path."authors/view.php");
           break;
-		case "add_category" :  
-		  include_once(path."category/form.php");
+		case "add_author" :  
+		      include_once(path."authors/form.php");
           break;
-	    case "customer" :
-          include_once(path."customers/view.php");
-          break;	
-		case "add_customer" :  
-		  include_once(path."customers/form.php");
-          break;	
-        case "product" :
-          include_once(path."products/view.php");
+
+        case "books" :
+          include_once(path."books/view.php");
           break;
-		case "add_product" :  
-		  include_once(path."products/form.php");
+    case "add_book" :  
+          include_once(path."books/form.php");
           break;  
+	   
         case "home" :
           include_once(path."home/home.php");
           break;    
@@ -58,12 +54,10 @@
     $pages=(isset($_GET["pages"] ))? $_GET["pages"] : '';  
     $array_menu=array(array('file'=>'home',
                             'label'=>'Home'),
-                      array('file'=>'category',            
-                            'label'=>'Category'),
-					  array('file'=>'product',
-                            'label'=>'Product'),
-					  array('file'=>'customer',
-					        'label'=>'Customers'));
+                      array('file'=>'authors',            
+                            'label'=>'Authors'),
+					  array('file'=>'books',
+                            'label'=>'Books'));
 						
     $menu='';
     foreach($array_menu as $row_menu){
